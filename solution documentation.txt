@@ -1,0 +1,139 @@
+https://pysource.com/2020/04/23/text-recognition-ocr-with-tesseract-and-opencv/
+
+
+
+1- download python program
+check the version number in cmd:
+
+>python --version
+
+2- download opencv, numby and caer in cmd
+
+ >pip install opencv-contrib-python
+
+the version needs updating
+we get inside python program in cmd by :
+
+>cd C:\Program Files\Python310
+
+then we use this command 
+
+C:\Program Files\Python310>python.exe -m pip install --upgrade pip
+
+then we install caer
+
+C:\Program Files\Python310>pip install caer
+
+3-we install tesseract now from this link :
+
+https://github.com/UB-Mannheim/tesseract/wiki
+we choose the 64 version 
+we chose the languages we want to work with 
+
+in order to use python and tesseract together we have to use pytesseract
+
+4-therefore we install pytesseract:
+
+C:\Program Files\Python310>pip install pytesseract
+
+5-we use pycharm to import libraries and start the OCR:
+we download pycharm here :
+https://www.jetbrains.com/pycharm/download/#section=windows
+
+we then open it and import the packages:
+go file------> settings---->under the project-->python interpeter--->install/add--->tesseract, numpy, opencv-contrib-python,pytesseract
+
+6-after that we start by writing lines of codes:
+
+import cv2
+import numpy as np
+import pytesseract
+
+7-then we use these two commands to work with our image:
+
+img = cv2.imread("rihal.jpg") //image name
+cv2.imshow("img", img)
+
+
+8- we inform pytesseract where we have tesseract engine installed using this :
+
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+9- we put these codes:
+
+text = pytesseract.image_to_string(img)
+print(text)
+
+10- we import our image 
+ under the project 
+
+
+11-challenge tasks
+
+i. Find all dates. Standardize the output to this format YYYY-MM-DD
+
+
+def GetAllDatesFromText(text):
+    dates = []
+
+    # match dates in 10/22/2222 format
+    match = re.findall(r"[\d]{2}/[\d]{2}/[\d]{4}", text) // finding all emails written in the extracted text in this format mm/dd/yyyy.{2} makes sure digits to be found are two decimal places
+    # match dates in 10 aprail 22222 format // finding all emails written in this format dd/month/yyyy
+    textMatch = re.findall(r"[\d]{1,2} [ADFJMNOS]\w* [\d]{4}", text)
+
+    for date in match:
+        formated_date = datetime.datetime.strptime(date, "%d/%m/%Y").strftime("%Y-%m-%d")# we use this method to re-order the months written in dd/mm/yyyy format to yyyy-mm-dd to our the wanted format yyyy-mm-dd
+        dates.append(formated_date)
+
+    for date in textMatch:
+        day , month , year = date.split(" ")
+        new_date = f'{day}/{month_string_to_number(month)}/{year}'
+        formated_date  = datetime.datetime.strptime(new_date, "%d/%m/%Y").strftime("%Y/%m/%d")
+        dates.append(formated_date)
+
+    print("---------------------- Dates in text  ------------------------")
+    print(dates)
+
+ii. Room Names
+
+def GetAllRoomsNames(text):
+    rooms = []
+    match = re.findall(r'Room: [a-zA-z]*',text)
+    for room in match:
+        room_heading , room_name = room.split(" ")
+        rooms.append(room_name)
+
+    print("---------------------- Room names in text  ------------------------")
+    print(rooms)
+iii. Room Rates
+
+def GetAllRoomsRates(text):
+    rates = []
+    match = re.findall(r'(?:[\£\$\€]{1}[,\d]+.?\d*)' , text)
+    for rate in match:
+        rates.append(rate)
+    print("---------------------- rates in text  ------------------------")
+    print(rates)
+iv. Individual Names. Standardize the output to this format "Firstname Lastname"
+
+def GetALLIndividualNamesFromText(text):
+    names = []
+    match  = re.findall(r'[:;]\s*(.+?)\s*<', text)
+    for name in match:
+        names.append(name)
+
+    print("---------------------- Individual names in text  ------------------------")
+    print(names)
+
+
+
+v. All emails
+
+ def GetAllEmailsFromText(text):
+    emails = []
+    match = re.findall(r'[\w\.-]+@[\w\.-]+', text)
+    for email in match:
+        emails.append(email)
+
+    print("----------------------Emails in text  ------------------------")
+    print(emails)
