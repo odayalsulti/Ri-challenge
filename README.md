@@ -1,2 +1,2 @@
 # Rihal-
-Rihal challenge
+Ri-challenge
